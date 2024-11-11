@@ -2,12 +2,15 @@ import requests
 import json
 from dotenv import load_dotenv
 import os
+import streamlit as st
 
 load_dotenv()
 
 # Define your API base URL, deployment ID, and API key
-api_key = os.getenv("OPENAI_API_KEY")  # Replace with your actual API key
-
+# api_key = os.getenv("OPENAI_API_KEY")  # Replace with your actual API key
+api_key = st.secrets["OPENAI_API_KEY"]
+# azure_search_key = os.getenv("AZURE_AI_SEARCH_KEY")
+azure_search_key = st.secrets["AZURE_AI_SEARCH_KEY"]
 # Define the endpoint URL
 url = "https://relationwiseai4136950365.openai.azure.com/openai/deployments/gpt-4o/chat/completions?api-version=2024-08-01-preview"
 
@@ -47,7 +50,7 @@ def azure_payload(user_input, convo_history):
             "semantic_configuration": "azureml-default",
             "authentication": {
             "type": "api_key",
-            "key": os.getenv("AZURE_AI_SEARCH_KEY")
+            "key": azure_search_key
             },
             "query_type": "simple",
             "in_scope": True,
@@ -120,7 +123,7 @@ def azure_payload(user_input, convo_history):
                     print()
                     return answer_3
                 else:
-                    print("Error:", response_1.status_code, response_1.json())
+                    print("Error:", response_3.status_code, response_3.json())
 
 
             else:
