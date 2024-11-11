@@ -1,0 +1,7 @@
+.env
+relationwise.db
+venv-relationwise-app/
+Files/
+Azure_RAG_Pipeline.ipynb
+RAG_Implementation.ipynb
+__pycache__/
