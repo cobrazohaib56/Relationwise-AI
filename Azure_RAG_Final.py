@@ -23,7 +23,7 @@ def azure_payload(user_input, convo_history):
     "messages": [
         {
         "role": "system",
-        "content": f"""You are an AI assistant that provides answers without including citations or references to source documents. 
+        "content": f"""You are an AI assistant that provides answers from the PDFs and your General Knowledge Base when noting from the publications is found.
         You have to keep in mind the history or the context of the converstaion which is {convo_history}"""
         },
         {
@@ -35,7 +35,7 @@ def azure_payload(user_input, convo_history):
     "top_p": 0.95,
     "frequency_penalty": 0,
     "presence_penalty": 0,
-    "max_tokens": 800,
+    "max_tokens": 2000,
     "stop": None,
     "data_sources": [
         {
@@ -66,15 +66,41 @@ def azure_payload(user_input, convo_history):
     # Check the response
     if response.status_code == 200:
         res = response.json()
+        
+        print(res)
         if res["choices"][0]["message"]["context"]["citations"]:
-            answer = res["choices"][0]["message"]["content"]
-            print("Success:", answer)
-            return answer
-        else:
+
             payload = {
                 "messages": [{
                     "role": "system",
-                    "content": f"""You are an AI assistant that provides answers without including citations or references to source documents. 
+                    "content": f"""You need to check whether both Number 1 and Number 2 are related somehow. If they are not related,
+                    you strictly needs to give the answer "No", if they are you will give an answer of "Yes" """
+                    },
+                    {
+                    "role": "user",
+                    "content": f"""Number 1: {res["choices"][0]["message"]["context"]["citations"]}
+                                Number 2: {user_input}
+                                """ 
+                    }],
+                "temperature": 0.7,
+                "top_p": 0.95,
+                "max_tokens": 2000
+            }
+            response_2 = requests.post(url, headers=headers, data=json.dumps(payload))
+            if response_2.status_code == 200:
+                res_2 = response_2.json()
+                answer_2 = res_2["choices"][0]["message"]["content"]
+                print()
+                print(answer_2)
+                print()
+                if answer_2 == "Yes":
+                    answer = res["choices"][0]["message"]["content"]
+                    return answer
+                else:
+                    payload = {
+                "messages": [{
+                    "role": "system",
+                    "content": f"""You are an AI assistant that provides answers from the PDFs and your General Knowledge Base when noting from the publications is found.
                     You have to keep in mind the history or the context of the converstaion which is {convo_history}"""
                     },
                     {
@@ -83,15 +109,45 @@ def azure_payload(user_input, convo_history):
                     }],
                 "temperature": 0.7,
                 "top_p": 0.95,
-                "max_tokens": 800
+                "max_tokens": 2000
+                }
+                response_3 = requests.post(url, headers=headers, data=json.dumps(payload))
+                if response_3.status_code == 200:
+                    res_3 = response_3.json()
+                    answer_3 = res_3["choices"][0]["message"]["content"]
+                    print()
+                    print("Success_3:", answer_3)
+                    print()
+                    return answer_3
+                else:
+                    print("Error:", response_1.status_code, response_1.json())
+
+
+            else:
+                print("Error:", response_2.status_code, response_2.json())
+
+        else:
+            payload = {
+                "messages": [{
+                    "role": "system",
+                    "content": f"""You are an AI assistant that provides answers from the PDFs and your General Knowledge Base when noting from the publications is found.
+                    You have to keep in mind the history or the context of the converstaion which is {convo_history}"""
+                    },
+                    {
+                    "role": "user",
+                    "content": user_input
+                    }],
+                "temperature": 0.7,
+                "top_p": 0.95,
+                "max_tokens": 2000
             }
-            response = requests.post(url, headers=headers, data=json.dumps(payload))
-            if response.status_code == 200:
-                res_1 = response.json()
+            response_1 = requests.post(url, headers=headers, data=json.dumps(payload))
+            if response_1.status_code == 200:
+                res_1 = response_1.json()
                 answer_1 = res_1["choices"][0]["message"]["content"]
                 print("Success_1:", answer_1)
                 return answer_1
             else:
-                print("Error:", response.status_code, response.json())
+                print("Error:", response_1.status_code, response_1.json())
     else:
         print("Error:", response.status_code, response.json())
