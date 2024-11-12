@@ -7,10 +7,10 @@ import streamlit as st
 load_dotenv()
 
 # Define your API base URL, deployment ID, and API key
-# api_key = os.getenv("OPENAI_API_KEY")  # Replace with your actual API key
-api_key = st.secrets["OPENAI_API_KEY"]
-# azure_search_key = os.getenv("AZURE_AI_SEARCH_KEY")
-azure_search_key = st.secrets["AZURE_AI_SEARCH_KEY"]
+api_key = os.getenv("OPENAI_API_KEY")  # Replace with your actual API key
+# api_key = st.secrets["OPENAI_API_KEY"]
+azure_search_key = os.getenv("AZURE_AI_SEARCH_KEY")
+# azure_search_key = st.secrets["AZURE_AI_SEARCH_KEY"]
 # Define the endpoint URL
 url = "https://relationwiseai4136950365.openai.azure.com/openai/deployments/gpt-4o/chat/completions?api-version=2024-08-01-preview"
 
@@ -26,7 +26,7 @@ def azure_payload(user_input, convo_history):
     "messages": [
         {
         "role": "system",
-        "content": f"""You are an AI assistant that provides answers from the PDFs and your General Knowledge Base when noting from the publications is found.
+        "content": f"""You are an AI assistant that provides answers from the PDFs and your General Knowledge Base, when nothing from the publications is found.
         You have to keep in mind the history or the context of the converstaion which is {convo_history}"""
         },
         {
@@ -52,12 +52,20 @@ def azure_payload(user_input, convo_history):
             "type": "api_key",
             "key": azure_search_key
             },
-            "query_type": "simple",
+            "embedding_dependency": {
+              "type": "endpoint",
+              "endpoint": "https://relationwiseai4136950365.openai.azure.com/openai/deployments/text-embedding-ada-002/embeddings?api-version=2023-05-15",
+              "authentication": {
+                "type": "api_key",
+                "key": "4dM411oyDK5qWQoTlmcJbwDg5fzatzCcUi6Se87DbU0k32d5luK1JQQJ99AKACfhMk5XJ3w3AAAAACOG7ENB"
+              }
+            },
+            "query_type": "vector_simple_hybrid",
             "in_scope": True,
             "role_information": "You are an AI assistant that helps people find information.",
             "strictness": 3,
-            "top_n_documents": 5
-        }
+            "top_n_documents": 5,
+           }
         }
     ]
     }
