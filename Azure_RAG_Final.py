@@ -38,7 +38,7 @@ def azure_payload(user_input, convo_history):
     "top_p": 0.95,
     "frequency_penalty": 0,
     "presence_penalty": 0,
-    "max_tokens": 2000,
+    "max_tokens": 800,
     "stop": None,
     "data_sources": [
         {
@@ -95,7 +95,7 @@ def azure_payload(user_input, convo_history):
                     }],
                 "temperature": 0.7,
                 "top_p": 0.95,
-                "max_tokens": 2000
+                "max_tokens": 800
             }
             response_2 = requests.post(url, headers=headers, data=json.dumps(payload))
             if response_2.status_code == 200:
@@ -120,7 +120,7 @@ def azure_payload(user_input, convo_history):
                     }],
                 "temperature": 0.7,
                 "top_p": 0.95,
-                "max_tokens": 2000
+                "max_tokens": 800
                 }
                 response_3 = requests.post(url, headers=headers, data=json.dumps(payload))
                 if response_3.status_code == 200:
@@ -150,7 +150,7 @@ def azure_payload(user_input, convo_history):
                     }],
                 "temperature": 0.7,
                 "top_p": 0.95,
-                "max_tokens": 2000
+                "max_tokens": 800
             }
             response_1 = requests.post(url, headers=headers, data=json.dumps(payload))
             if response_1.status_code == 200:
