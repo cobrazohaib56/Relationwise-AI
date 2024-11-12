@@ -64,7 +64,7 @@ def azure_payload(user_input, convo_history):
             "in_scope": True,
             "role_information": "You are an AI assistant that helps people find information.",
             "strictness": 3,
-            "top_n_documents": 5,
+            "top_n_documents": 3,
            }
         }
     ]
