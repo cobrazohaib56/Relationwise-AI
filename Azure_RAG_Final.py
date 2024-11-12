@@ -7,10 +7,10 @@ import streamlit as st
 load_dotenv()
 
 # Define your API base URL, deployment ID, and API key
-api_key = os.getenv("OPENAI_API_KEY")  # Replace with your actual API key
-# api_key = st.secrets["OPENAI_API_KEY"]
-azure_search_key = os.getenv("AZURE_AI_SEARCH_KEY")
-# azure_search_key = st.secrets["AZURE_AI_SEARCH_KEY"]
+# api_key = os.getenv("OPENAI_API_KEY")  # Replace with your actual API key
+api_key = st.secrets["OPENAI_API_KEY"]
+# azure_search_key = os.getenv("AZURE_AI_SEARCH_KEY")
+azure_search_key = st.secrets["AZURE_AI_SEARCH_KEY"]
 # Define the endpoint URL
 url = "https://relationwiseai4136950365.openai.azure.com/openai/deployments/gpt-4o/chat/completions?api-version=2024-08-01-preview"
 
