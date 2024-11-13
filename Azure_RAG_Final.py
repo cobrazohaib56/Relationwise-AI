@@ -7,10 +7,10 @@ import streamlit as st
 load_dotenv()
 
 # Define your API base URL, deployment ID, and API key
-# api_key = os.getenv("OPENAI_API_KEY")  # Replace with your actual API key
-api_key = st.secrets["OPENAI_API_KEY"]
-# azure_search_key = os.getenv("AZURE_AI_SEARCH_KEY")
-azure_search_key = st.secrets["AZURE_AI_SEARCH_KEY"]
+api_key = os.getenv("OPENAI_API_KEY")  # Replace with your actual API key
+# api_key = st.secrets["OPENAI_API_KEY"]
+azure_search_key = os.getenv("AZURE_AI_SEARCH_KEY")
+# azure_search_key = st.secrets["AZURE_AI_SEARCH_KEY"]
 # Define the endpoint URL
 url = "https://relationwiseai4136950365.openai.azure.com/openai/deployments/gpt-4o/chat/completions?api-version=2024-08-01-preview"
 
@@ -84,13 +84,14 @@ def azure_payload(user_input, convo_history):
             payload = {
                 "messages": [{
                     "role": "system",
-                    "content": f"""You need to check whether both Number 1 and Number 2 are related somehow. If they are not related,
-                    you strictly needs to give the answer "No", if they are you will give an answer of "Yes" """
+                    "content": f"""I am giving you two text blocks 1, and 2. You need to check their relevence. 
+                    If theboth 1. and 2.  are not related, you need to give a general response for the user query which is this: {user_input}
+                    If both of 1. and 2. are related you strictly need to say "Yes"  """
                     },
                     {
                     "role": "user",
-                    "content": f"""Number 1: {res["choices"][0]["message"]["context"]["citations"]}
-                                Number 2: {user_input}
+                    "content": f"""1. {res["choices"][0]["message"]["context"]["citations"]}
+                                2. {user_input}
                                 """ 
                     }],
                 "temperature": 0.7,
@@ -108,32 +109,7 @@ def azure_payload(user_input, convo_history):
                     answer = res["choices"][0]["message"]["content"]
                     return answer
                 else:
-                    payload = {
-                "messages": [{
-                    "role": "system",
-                    "content": f"""You are an AI assistant that provides answers from the PDFs and your General Knowledge Base when noting from the publications is found.
-                    You have to keep in mind the history or the context of the converstaion which is {convo_history}"""
-                    },
-                    {
-                    "role": "user",
-                    "content": user_input
-                    }],
-                "temperature": 0.7,
-                "top_p": 0.95,
-                "max_tokens": 800
-                }
-                response_3 = requests.post(url, headers=headers, data=json.dumps(payload))
-                if response_3.status_code == 200:
-                    res_3 = response_3.json()
-                    answer_3 = res_3["choices"][0]["message"]["content"]
-                    print()
-                    print("Success_3:", answer_3)
-                    print()
-                    return answer_3
-                else:
-                    print("Error:", response_3.status_code, response_3.json())
-
-
+                    return answer_2
             else:
                 print("Error:", response_2.status_code, response_2.json())
 
