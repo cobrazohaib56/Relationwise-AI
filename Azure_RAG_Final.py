@@ -84,14 +84,20 @@ def azure_payload(user_input, convo_history):
             payload = {
                 "messages": [{
                     "role": "system",
-                    "content": f"""I am giving you two text blocks 1, and 2. You need to check their relevence. 
-                    If theboth 1. and 2.  are not related, you need to give a general response for the user query which is this: {user_input}
-                    If both of 1. and 2. are related you strictly need to say "Yes"  """
+                    "content": f"""
+                    You need to check the relevence of both "Number 1" and "Number 2. You have to handle 2 things here.
+                    
+                    NOTE: Do not say anything about their relevence in your response
+
+                    If both "Number 1" and "Number 2" are not related, you need to give a general response for the user query which is the 
+                    Number 1, this one : {user_input}. Please Keep in mind you need to give a response of it from your own Knowledge base.
+                    
+                    If both of "Number 1" and "Number 2" are related you strictly need to say "Yes"  """
                     },
                     {
                     "role": "user",
-                    "content": f"""1. {res["choices"][0]["message"]["context"]["citations"]}
-                                2. {user_input}
+                    "content": f"""Number 1: {res["choices"][0]["message"]["context"]["citations"]}
+                                Number 2: {user_input}
                                 """ 
                     }],
                 "temperature": 0.7,
